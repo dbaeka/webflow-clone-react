@@ -2,10 +2,8 @@ import React from "react";
 import {useDrop} from "react-dnd";
 import {DropOverlay} from "./DropOverlay";
 import styles from "../../../styles/Home.module.scss";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronRight, faEllipsisH} from "@fortawesome/free-solid-svg-icons";
 
-export const FolderEntryCard = ({id, onMoveItem}) => {
+export const FolderEntryCard = ({id, onMoveItem, data}) => {
     const [{isOver, canDrop}, connectDrop] = useDrop({
         accept: "FILE",
         collect: (monitor) => ({
@@ -37,7 +35,7 @@ export const FolderEntryCard = ({id, onMoveItem}) => {
             </div>
             <div className={styles.bottom}>
                 <div className={styles.titleWrapper}>
-                    <div className={styles.name}>New Folder</div>
+                    <div className={styles.name}>{data.name}</div>
                 </div>
                 <span className={styles.link}>
                     Empty

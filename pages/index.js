@@ -7,20 +7,15 @@ import {
     Breadcrumb,
     BreadcrumbItem,
 } from "reactstrap";
-import {Entry} from "../utilities/DataTypes.ts";
-import EntryCard from "../components/dashboard/EntryCard";
-
-import DraggableEntryCard from "../components/dashboard/grid/DraggableEntryCard";
-import {Grid, GridImage, GridItem} from "../components/dashboard/grid/Grid";
+import {EntryType} from "../utilities/DataTypes.ts";
 import GridContext from "../components/dashboard/grid/GridContext";
 import {FileEntryCard} from "../components/dashboard/grid/FileEntryCard";
 import {FolderEntryCard} from "../components/dashboard/grid/FolderEntryCard";
 
+
 export default function Home() {
 
     // const items = new Map();
-
-    let val = new Entry("id here", new Date(), new Date(), "name goes here")
 
     const {items, moveItem} = useContext(GridContext);
 
@@ -48,19 +43,14 @@ export default function Home() {
                             <BreadcrumbItem><a href="#">Library</a></BreadcrumbItem>
                         </Breadcrumb>
                         <div className={styles.grid}>
-                            <FileEntryCard id={"adadadadadad"}/>
-                            <FolderEntryCard id={"sfsfsfsf"}/>
-                            {/*<Grid>*/}
-                            {/*    {items.map(item => (*/}
-
-                            {/*    <DraggableEntryCard key={item.id} id={item.id} onMoveItem={moveItem}>*/}
-                            {/*                    <GridItem>*/}
-                            {/*                        <GridImage src={item.src}>*/}
-                            {/*                        </GridImage>*/}
-                            {/*                    </GridItem>*/}
-                            {/*    </DraggableEntryCard>*/}
-                            {/*    ))}*/}
-                            {/*</Grid>*/}
+                            {Object.entries(items).map(([, item]) => {
+                                if (item.type === EntryType.File) {
+                                    return <FileEntryCard key={item.id} id={item.id} data={item}/>
+                                } else {
+                                    return <FolderEntryCard key={item.id} id={item.id} data={item}
+                                                            onMoveItem={moveItem}/>
+                                }
+                            })}
                         </div>
                     </div>
                 </main>

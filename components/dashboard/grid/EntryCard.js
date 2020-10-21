@@ -1,23 +1,7 @@
 import React, {useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEllipsisH, faChevronRight} from '@fortawesome/free-solid-svg-icons';
-import {
-    Card,
-    CardBody,
-    CardFooter,
-    Collapse,
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    Nav,
-    NavItem,
-    NavLink,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupText,
-} from 'reactstrap';
-import styles from "../../styles/Home.module.scss";
+import styles from "../../../styles/Home.module.scss";
 
 
 const EntryCard = (props) => {

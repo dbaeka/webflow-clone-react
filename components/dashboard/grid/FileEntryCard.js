@@ -3,11 +3,12 @@ import {useDrag} from "react-dnd";
 import styles from "../../../styles/Home.module.scss";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEllipsisH, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+import {EntryType} from "../../../utilities/DataTypes.ts";
 
-export const FileEntryCard = memo(({id}) => {
+export const FileEntryCard = memo(({id, data}) => {
 
     const [{isDragging}, connectDrag] = useDrag({
-        item: {id, type: "FILE"},
+        item: {id, type: EntryType.File},
         collect: monitor => {
             return {
                 isDragging: monitor.isDragging()
@@ -45,7 +46,7 @@ export const FileEntryCard = memo(({id}) => {
             </div>
             <div className={styles.bottom}>
                 <div className={styles.titleWrapper}>
-                    <div className={styles.name}>Title Goes here</div>
+                    <div className={styles.name}>{data.name}</div>
                 </div>
                 <a className={styles.link} href="#">
                     Open Project

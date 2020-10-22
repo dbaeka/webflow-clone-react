@@ -3,7 +3,7 @@ import {useDrop} from "react-dnd";
 import {DropOverlay} from "./DropOverlay";
 import styles from "../../../styles/Home.module.scss";
 
-export const FolderEntryCard = ({id, onMoveItem, data}) => {
+export const FolderEntryCard = ({id, onMoveItem, onClick, data}) => {
     const [{isOver, canDrop}, connectDrop] = useDrop({
         accept: "FILE",
         collect: (monitor) => ({
@@ -21,7 +21,7 @@ export const FolderEntryCard = ({id, onMoveItem, data}) => {
     });
 
     return (
-        <div className={styles.card} ref={connectDrop}>
+        <div className={styles.card} onClick={onClick} ref={connectDrop}>
             <div>
                 <div className={styles.preview + " " + styles.folderPreview}>
                     <div

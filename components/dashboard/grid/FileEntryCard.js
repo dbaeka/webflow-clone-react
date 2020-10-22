@@ -2,12 +2,12 @@ import React, {memo} from "react";
 import {useDrag} from "react-dnd";
 import styles from "../../../styles/Home.module.scss";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faEllipsisH, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+import {faEllipsisH, faChevronRight, faArrowsAlt} from '@fortawesome/free-solid-svg-icons';
 import {EntryType} from "../../../utilities/DataTypes.ts";
 
-export const FileEntryCard = memo(({id, data}) => {
+export const FileEntryCard = memo(({id, onClick, onContextClick, data}) => {
 
-    const [{isDragging}, connectDrag] = useDrag({
+    const [{isDragging}, connectDrag, preview] = useDrag({
         item: {id, type: EntryType.File},
         collect: monitor => {
             return {
@@ -17,7 +17,7 @@ export const FileEntryCard = memo(({id, data}) => {
     });
 
     return (
-        <div className={styles.card} ref={connectDrag} style={{
+        <div className={styles.card} ref={preview} style={{
             opacity: isDragging ? 0.5 : 1,
         }}>
             <div>
@@ -25,7 +25,7 @@ export const FileEntryCard = memo(({id, data}) => {
                     className={styles.preview + " " + styles.newPreview}
                     style={{backgroundImage: "url(/img/file_placeholder.png)"}}
                 >
-                    <div className={styles.hoverContainer}>
+                    <div onClick={onClick} className={styles.hoverContainer}>
                         <div className={styles.link}>
                             <h3>
                                 <span>Open Editor</span>
@@ -38,8 +38,11 @@ export const FileEntryCard = memo(({id, data}) => {
             <div className={styles.controls}>
                 <ul>
                     <li className={styles.details + " " + styles.status}>
+                        <div ref={connectDrag} className={styles.handle}>
+                            <FontAwesomeIcon icon={faArrowsAlt}/>
+                        </div>
                     </li>
-                    <li className={styles.settings + " light-gray"}>
+                    <li onClick={onContextClick} className={styles.settings + " light-gray"}>
                         <FontAwesomeIcon icon={faEllipsisH}/>
                     </li>
                 </ul>

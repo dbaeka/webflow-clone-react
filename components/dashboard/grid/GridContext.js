@@ -1,20 +1,9 @@
 import React, {createContext, useState, useEffect} from "react";
 import Store from "../../../flux/store";
-import {Actions} from "../../../flux";
 import useSWR from 'swr';
+import {Actions} from "../../../flux";
 
-const GridContext = createContext({items: []});
-
-
-const fetcher = async (url) => {
-    const res = await fetch(url)
-    const data = await res.json()
-
-    if (res.status !== 200) {
-        throw new Error(data.message)
-    }
-    return data
-}
+const GridContext = createContext({items: {}});
 
 
 export const GridProvider = (props) => {
@@ -37,7 +26,7 @@ export const GridProvider = (props) => {
         const offset = destinationIndex - sourceIndex;
 
         // this.setState(state => ({
-            // items: moveElement(state.items, sourceIndex, offset)
+        // items: moveElement(state.items, sourceIndex, offset)
         // }));
     };
 

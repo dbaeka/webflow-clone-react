@@ -241,6 +241,27 @@
         float: left;
         font-size: 14px;
 
+        .handle {
+          width: 1rem;
+          height: 1rem;
+          display: inline-block;
+          margin-bottom: auto;
+          margin-top: auto;
+          margin-left: 8px;
+          cursor: move;
+          color: #bcbcbc;
+          transition: color 100ms ease-in-out;
+
+          &:hover {
+            color: #1d1d1d;
+          }
+
+          svg {
+            height: 1rem;
+            width: 1rem;
+          }
+        }
+
         &.status.details {
           padding: 0;
           min-width: 195px;
@@ -340,8 +361,8 @@
 
 @media (max-width: 690px) {
   .grid {
-    width: 100%;
-    flex-direction: column;
+    //width: 100%;
+    //flex-direction: column;
   }
 }
 
@@ -357,6 +378,14 @@
 .projectManager {
   background-color: #f5f5f5;
   width: 100vw;
+}
+
+.contextMenuItemIcon {
+  font-size: 15px;
+  margin-right: 10px;
+  margin-top: auto;
+  margin-bottom: auto;
+  font-style: normal;
 }
 
 @keyframes animate-right-chevron {

@@ -12,7 +12,6 @@ const cors = initMiddleware(
     })
 )
 
-
 export default async (req, res) => {
     await cors(req, res);
 
@@ -43,6 +42,8 @@ export default async (req, res) => {
     const projDirFiles = fs.readdirSync(fileJson.mainDirectory);
 
     var result = new Map();
+    var filePaths = {};
+
     projDirFiles.forEach(item => {
         const name = path.join(fileJson.mainDirectory, item);
         if (path.extname(item) === ".budfile") { //file
@@ -54,9 +55,11 @@ export default async (req, res) => {
                     ...structureJson,
                     id: String(dev) + String(ino),
                     dateCreated: birthtime,
-                    dateModified: mtime
+                    dateModified: mtime,
+                    path: name
                 }
                 result[structureJson.id] = structureJson;
+                filePaths[structureJson.id] = name;
             }
         } else if (!path.extname(item) && fs.lstatSync(name).isDirectory()) { // folder
             const folderFiles = fs.readdirSync(name);
@@ -69,7 +72,8 @@ export default async (req, res) => {
                     children: {},
                     dateCreated: birthtime,
                     dateModified: mtime,
-                    id: String(parentDev) + String(parentIno)
+                    id: String(parentDev) + String(parentIno),
+                    path: name
                 }
                 matchedFiles.forEach(subfile => {
                     if (fs.existsSync(path.join(name, subfile, "structure.json"))) {
@@ -81,15 +85,22 @@ export default async (req, res) => {
                             id: String(dev) + String(ino),
                             dateCreated: birthtime,
                             dateModified: mtime,
-                            parent: String(parentDev) + String(parentIno)
+                            parent: String(parentDev) + String(parentIno),
+                            path: path.join(name, subfile)
                         }
                         temp.children[structureJson.id] = structureJson;
+                        filePaths[structureJson.id] = path.join(name, subfile);
                     }
                 })
                 result[String(parentDev) + String(parentIno)] = temp;
+                filePaths[String(parentDev) + String(parentIno)] = name;
             }
         }
     })
+    if (Object.keys(filePaths).length !== 0 && filePaths.constructor === Object)
+        fs.writeFileSync(path.join(budConfigPath, ".tmp"), JSON.stringify(filePaths));
 
+//TODO: refactor above code and create a .tmp file hidden that keeps a list of the inode and dev id along with the actual path
+// Update each time load_directory is called
     res.status(200).json({name: result})
 }

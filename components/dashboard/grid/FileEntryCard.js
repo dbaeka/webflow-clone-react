@@ -4,8 +4,9 @@ import styles from "../../../styles/Home.module.scss";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEllipsisH, faChevronRight, faArrowsAlt} from '@fortawesome/free-solid-svg-icons';
 import {EntryType} from "../../../utilities/DataTypes.ts";
+import {contextMenu} from "react-contexify";
 
-export const FileEntryCard = memo(({id, onClick, onContextClick, data}) => {
+export const FileEntryCard = memo(({id, onClick, data, menuId}) => {
 
     const [{isDragging}, connectDrag, preview] = useDrag({
         item: {id, type: EntryType.File},
@@ -15,6 +16,17 @@ export const FileEntryCard = memo(({id, onClick, onContextClick, data}) => {
             }
         }
     });
+
+    const showContextMenu = (e) => {
+        e.preventDefault();
+        contextMenu.show({
+            id: menuId,
+            event: e,
+            props: {
+                data: data
+            }
+        })
+    }
 
     return (
         <div className={styles.card} ref={preview} style={{
@@ -42,7 +54,7 @@ export const FileEntryCard = memo(({id, onClick, onContextClick, data}) => {
                             <FontAwesomeIcon icon={faArrowsAlt}/>
                         </div>
                     </li>
-                    <li onClick={onContextClick} className={styles.settings + " light-gray"}>
+                    <li onClick={showContextMenu} className={styles.settings + " light-gray"}>
                         <FontAwesomeIcon icon={faEllipsisH}/>
                     </li>
                 </ul>

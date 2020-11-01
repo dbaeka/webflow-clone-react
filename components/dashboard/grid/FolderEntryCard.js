@@ -11,13 +11,11 @@ export const FolderEntryCard = ({id, onMoveItem, onClick, data}) => {
             canDrop: !!monitor.canDrop(),
         }),
         canDrop: (movingItem) => (movingItem.id !== id),
-        hover(hoveredOverItem, monitor) {
-            if (hoveredOverItem.id !== id) {
-                // console.log(hoveredOverItem)
-                // console.log(monitor.canDrop())
-                // onMoveItem(hoveredOverItem.id, id)
+        drop(droppedItem) {
+            if (droppedItem.id !== id) {
+                onMoveItem(droppedItem.id, id);
             }
-        }
+        },
     });
 
     return (

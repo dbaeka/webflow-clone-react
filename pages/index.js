@@ -1,89 +1,66 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.scss'
-import React, {useContext, useEffect, useState} from "react";
-import {contextMenu} from 'react-contexify';
+import React, {useEffect, useState} from "react";
 import DashboardNavBar from "../components/dashboard/NavBar";
 import {
     Breadcrumb,
     BreadcrumbItem,
 } from "reactstrap";
 import {EntryType} from "../utilities/DataTypes.ts";
-import GridContext from "../components/dashboard/grid/GridContext";
 import {FileEntryCard} from "../components/dashboard/grid/FileEntryCard";
 import {FolderEntryCard} from "../components/dashboard/grid/FolderEntryCard";
 import {ContextMenu} from "../components/dashboard/ContextMenu";
-import Store from "../flux/store";
-import {MenuFunctionType} from "../utilities/MenuFunctionTypes.ts";
+import {useRouter} from 'next/router'
+import {useProjectFiles} from "../containers/ProjectFiles";
 
 
 export default function Home() {
-
-    const {items, moveItem} = useContext(GridContext);
-
-    const [displayItems, setDisplayItems] = useState(items);
+    const [items, setItems] = useState(undefined);
     const [isSubFolder, setIsSubFolder] = useState(false);
     const [currentFolder, setCurrentFolder] = useState(null);
 
-    const menuId = "menu_"
+    const router = useRouter();
+    const [{data}, dispatchMoveFile] = useProjectFiles();
+
+    const menuId = "menu_";
+
+    const moveItem = (sourceId, destinationId) => {
+        const sourceItem = data[sourceId];
+        const destinationItem = data[destinationId];
+
+        // If source/destination is unknown, do nothing.
+        if (sourceItem.type !== EntryType.File || destinationItem.type !== EntryType.Folder) {
+            return;
+        }
+
+        //TODO: modify the current Store state for instant show
+        dispatchMoveFile({source: sourceId, dest: destinationId});
+
+        //TODO Send API GET request to move source to dest through redux and update where necessary
+
+    };
+
 
     const handleFolderClick = (event, item) => {
-        setDisplayItems(item.children)
+        setItems(item.children)
         setIsSubFolder(true);
         setCurrentFolder(item.name);
     }
 
-    const handleFileClick = (event, item) => {
-        console.log(item);
+    const handleFileClick = (e, item) => {
+        e.preventDefault();
+        return router.push({
+            pathname: '/editor/[[...fid]]',
+            query: {fid: item.id},
+        })
     }
 
     const resetToTopDir = (event) => {
         event.preventDefault();
-        setDisplayItems(items);
+        setItems(items);
         setIsSubFolder(false);
         setCurrentFolder(null);
     }
-
-    const showContextMenu = (e, item) => {
-        e.preventDefault();
-        contextMenu.show({
-            id: menuId,
-            event: e,
-            props: {
-                data: item
-            }
-        })
-    }
-
-    const handleContextMenu = ({props, type}) => {
-        switch (type) {
-            case MenuFunctionType.delete:
-                console.log("delete")
-                break;
-            case MenuFunctionType.open:
-                console.log("open")
-                break;
-            case MenuFunctionType.move:
-                console.log("move")
-                break;
-            case MenuFunctionType.settings:
-                console.log("settings")
-                break;
-            default:
-                break;
-        }
-    }
-
-    const onChange = () => {
-        setDisplayItems(Store.getDirectoryItems());
-    }
-
-    useEffect(() => {
-        Store.addChangeListener(onChange);
-
-        return () => {
-            Store.removeChangeListener(onChange)
-        }
-    }, [])
 
     return (
         <div className={styles.body}>
@@ -114,13 +91,13 @@ export default function Home() {
                             {isSubFolder && <BreadcrumbItem>{currentFolder}</BreadcrumbItem>}
                         </Breadcrumb>
                         <div className={styles.grid}>
-                            {Object.entries(displayItems).map(([, item]) => {
+                            {console.log(data)}
+                            {Object.entries(data).map(([, item]) => {
                                 if (item.type === EntryType.File) {
                                     return <FileEntryCard onClick={(event) => handleFileClick(event, item)}
-                                                          onContextClick={(event) => showContextMenu(event, item)}
-                                                          key={item.id} id={item.id}
+                                                          key={item.id} id={item.id} menuId={menuId}
                                                           data={item}/>
-                                } else {
+                                } else if (item.type === EntryType.Folder) {
                                     return <FolderEntryCard key={item.id} id={item.id} data={item}
                                                             onClick={(event) => handleFolderClick(event, item)}
                                                             onMoveItem={moveItem}/>
@@ -136,7 +113,7 @@ export default function Home() {
                         <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo}/>
                     </span>
                 </footer>
-                <ContextMenu id={menuId} onClick={handleContextMenu}/>
+                <ContextMenu id={menuId}/>
             </div>
         </div>
     )

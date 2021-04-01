@@ -31,7 +31,8 @@
     "@reduxjs/toolkit": "^1.4.0",
     "redux-persist": "^6.0.0",
     "sass": "^1.26.10",
-    "swr": "^0.3.6"
+    "swr": "^0.3.6",
+    "leaflet": "^1.7.1"
   },
   "devDependencies": {
     "cors": "^2.8.5",

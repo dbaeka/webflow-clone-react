@@ -21,7 +21,6 @@ export default function Home() {
 
     const router = useRouter();
     const [{data}, dispatchMoveFile] = useProjectFiles();
-
     const menuId = "menu_";
 
     const moveItem = (sourceId, destinationId) => {
@@ -40,8 +39,14 @@ export default function Home() {
 
     };
 
+    /**
+     * @returns {Object | Array} array of items returned
+     */
+    const itemsToShow = () => (isSubFolder ? items : data)
 
-    const handleFolderClick = (event, item) => {
+
+    const handleFolderClick = (e, item) => {
+        e.preventDefault();
         setItems(item.children)
         setIsSubFolder(true);
         setCurrentFolder(item.name);
@@ -57,7 +62,7 @@ export default function Home() {
 
     const resetToTopDir = (event) => {
         event.preventDefault();
-        setItems(items);
+        setItems(data);
         setIsSubFolder(false);
         setCurrentFolder(null);
     }
@@ -91,8 +96,7 @@ export default function Home() {
                             {isSubFolder && <BreadcrumbItem>{currentFolder}</BreadcrumbItem>}
                         </Breadcrumb>
                         <div className={styles.grid}>
-                            {console.log(data)}
-                            {Object.entries(data).map(([, item]) => {
+                            {Object.entries(itemsToShow()).map(([, item]) => {
                                 if (item.type === EntryType.File) {
                                     return <FileEntryCard onClick={(event) => handleFileClick(event, item)}
                                                           key={item.id} id={item.id} menuId={menuId}
